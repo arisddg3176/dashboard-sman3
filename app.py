@@ -212,11 +212,22 @@ elif st.session_state.nav == "Cetak Absensi":
         </style>
         </head>
         <body>
-            <div class="header">
-                PEMERINTAH DAERAH PROVINSI JAWA BARAT<br>
-                DINAS PENDIDIKAN - CABANG DINAS PENDIDIKAN WILAYAH V<br>
-                SEKOLAH MENENGAH ATAS NEGERI 3 SUKABUMI<br>
-                <span style="font-weight: normal; font-size:10px;">Jalan Ciaul Baru No. 21 Kota Sukabumi-43116 Telp. (0266) 221453<br>E-mail : smanegeri3kotasukabumi@gmail.com</span><hr>
+            <table style="width: 100%; border: none; border-bottom: 2px solid black; margin-bottom: 10px;">
+                <tr>
+                    <td style="width: 15%; border: none; text-align: center; vertical-align: middle;">
+                        <!-- Masukkan Direct Link Google Drive Anda pada atribut src di bawah ini -->
+                        <img src="https://drive.google.com/uc?export=view&id=1iRhKSF6LNfIKJkBwo5SJO63hlErfCU4y" width="75">
+                    </td>
+                    <td style="width: 85%; border: none; text-align: center; vertical-align: middle; line-height: 1.2;">
+                        <span style="font-weight: bold; font-size: 13px;">PEMERINTAH DAERAH PROVINSI JAWA BARAT<br>
+                        DINAS PENDIDIKAN - CABANG DINAS PENDIDIKAN WILAYAH V<br>
+                        SEKOLAH MENENGAH ATAS NEGERI 3 SUKABUMI</span><br>
+                        <span style="font-weight: normal; font-size:10px;">Jalan Ciaul Baru No. 21 Kota Sukabumi-43116 Telp. (0266) 221453<br>E-mail : smanegeri3kotasukabumi@gmail.com</span>
+                    </td>
+                </tr>
+            </table>
+            
+            <div style="text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 15px;">
                 DAFTAR KEHADIRAN SISWA<br>TAHUN PELAJARAN 2026-2027
             </div>
             <table style="border:none; text-align:left; font-weight:bold; margin-bottom:5px; font-size:11px;">
@@ -244,7 +255,7 @@ elif st.session_state.nav == "Cetak Absensi":
         """
         for i, s in enumerate(students):
             # Memaksa 1 baris
-            html_absen += f"<tr><td style='font-size:9.5px;'>{i+1}</td><td class='text-nowrap' style='font-size:9px;'>{s['nipd']} / {s['nisn']}</td><td style='text-align:left; font-size:9.5px;' class='text-nowrap'>{s['nama']}</td><td style='font-size:9.5px;'>{s['jk']}</td>"
+            html_absen += f"<tr><td style='font-size:10px;'>{i+1}</td><td class='text-nowrap' style='font-size:9.5px;'>{s['nipd']} / {s['nisn']}</td><td style='text-align:left; font-size:10px;' class='text-nowrap'>{s['nama']}</td><td style='font-size:10px;'>{s['jk']}</td>"
             html_absen += "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>"
             
         html_absen += f"""
