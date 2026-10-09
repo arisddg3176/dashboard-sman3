@@ -227,16 +227,16 @@ elif st.session_state.nav == "Cetak Absensi":
                 <thead>
                     <tr>
                         <th rowspan="2" style="width:25px; font-size:10px;">No</th>
-                        <th rowspan="2" style="width:100px;font-size:10px;" class="text-nowrap">No. Induk / NISN</th>
-                        <th rowspan="2" style="width:190px;font-size:10px;" class="text-nowrap">Nama Peserta Didik</th>
+                        <th rowspan="2" style="width:110px;font-size:10px;" class="text-nowrap">No. Induk / NISN</th>
+                        <th rowspan="2" style="width:250px;font-size:10px;" class="text-nowrap">Nama Peserta Didik</th>
                         <th rowspan="2" style="width:25px;font-size:10px;">L/P</th>
                         <th colspan="6" style="font-size:10px;">Tanggal</th>
                         <th colspan="3" style="font-size:10px;">Absensi</th>
                         <th rowspan="2" style="font-size:10px;">Jml<br>A+S+I</th>
                     </tr>
                     <tr>
-                        <th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                        <th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>&nbsp;&nbsp;</th><th>&nbsp;&nbsp;</th><th>&nbsp;&nbsp;</th>
+                        <th>&nbsp;&nbsp;</th><th>&nbsp;&nbsp;</th><th>&nbsp;&nbsp;</th>
                         <th style="width:15px;font-size:10px;">A</th><th style="width:15px;font-size:10px;">S</th><th style="width:15px;font-size:10px;">I</th>
                     </tr>
                 </thead>
