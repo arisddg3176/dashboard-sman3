@@ -4,9 +4,10 @@ import pandas as pd
 import base64
 
 # ==========================================
-# KONFIGURASI API
+# KONFIGURASI API & GAMBAR
 # ==========================================
-API_URL = "https://script.google.com/macros/s/AKfycbx0TisI1nrnQXEFwZ7I8cbXg-H2Ys4NFh8QjQIBUISZQ3_K4EqaN1V87QOqwvkjEhNbNQ/exec" # MASUKKAN URL WEB APP ANDA
+API_URL = "https://script.google.com/macros/s/AKfycbwYeYIT6Jjfwfwu8lEiV9iDW_TefnSvD-vdjCvR4PH2QqOWXfKGtWA8xvOqZfCdAIBxMQ/exec" # GANTI DENGAN URL WEB APP BARU
+LOGO_URL = "https://raw.githubusercontent.com/username/repo/main/logo.png" # GANTI DENGAN URL RAW GITHUB LOGO ANDA
 
 st.set_page_config(page_title="Dashboard SMAN 3 Sukabumi", page_icon="🎓", layout="wide")
 
@@ -98,7 +99,7 @@ def modal_delete(row):
 
 # --- SIDEBAR NAVIGASI ---
 st.sidebar.title(f"👨‍💼 {st.session_state.user_name}")
-menus = ["Dashboard Utama", "Manajemen Data Siswa", "Cetak Absensi", "Mutasi & Pindah Kelas"]
+menus = ["Dashboard Utama", "Manajemen Data Siswa", "Cetak Absensi", "Mutasi & Pindah Kelas", "Cek Data Dapodik"]
 selected_nav = st.sidebar.radio("Menu Navigasi", menus, index=menus.index(st.session_state.nav) if st.session_state.nav in menus else 0)
 st.session_state.nav = selected_nav
 st.sidebar.write("---")
@@ -144,7 +145,7 @@ if st.session_state.nav == "Dashboard Utama":
             html_rekap += f"<tr style='background-color:#d1e7dd; font-weight:bold;'><td colspan='2'>JUMLAH KELAS {j_label}</td><td>{sub_L}</td><td>{sub_P}</td><td>{sub_T}</td></tr>"
             g_L += sub_L; g_P += sub_P; g_T += sub_T
             
-    html_rekap += f"<tr style='background-color:#0f5132; color:white; font-weight:bold;'><td colspan='2'>TOTAL KESELURUHAN</td><td>{g_L}</td><td>{g_P}</td><td>{g_T}</td></tr>"
+    html_rekap += f"<tr style='background-color:#0f5132; color:white; font-weight:bold;'><td colspan='2'>TOTAL KESELURUEM</td><td>{g_L}</td><td>{g_P}</td><td>{g_T}</td></tr>"
     html_rekap += "</table></body></html>"
     
     b64 = base64.b64encode(html_rekap.encode()).decode()
@@ -162,7 +163,7 @@ elif st.session_state.nav == "Manajemen Data Siswa":
     st.session_state.filter_kelas = selected_kelas
     
     df_filtered = df_siswa[df_siswa['rombel'] == selected_kelas]
-    search = st.text_input("🔍 Cari Nama (Otomatis Kapital) atau NISN...")
+    search = st.text_input("🔍 Cari Nama atau NISN...")
     if search: df_filtered = df_filtered[df_filtered['nama'].str.contains(search.upper(), case=False, na=False) | df_filtered['nisn'].astype(str).str.contains(search, na=False)]
 
     st.write("---")
@@ -197,82 +198,80 @@ elif st.session_state.nav == "Cetak Absensi":
         res = requests.get(f"{API_URL}?action=getAbsensi&rombel={p_kelas}").json()
         students = res['data']['students']
         walas = res['data']['walas']
-        walas_nip = res['data'].get('walasNip', '-') # NIP Baru
+        walas_nip = res['data'].get('walasNip', '-')
         
         html_absen = f"""
         <html>
         <head>
         <style>
-            @page {{ size: 215.9mm 330.2mm; margin: 5mm; }} /* F4 Paper Size */
+            @page {{ size: 215.9mm 330.2mm; margin: 10mm; }}
             body {{ font-family: Arial, sans-serif; font-size: 10px; margin: 0; }}
-            .header {{ text-align: center; font-weight: bold; margin-bottom: 15px; line-height: 1.1; font-size: 12px; }}
-            table {{ width: 100%; border-collapse: collapse; table-layout: fixed; }}
-            th, td {{ border: 1px solid black; padding: 3px; text-align: center; overflow: hidden; }}
+            table.layout {{ width: 100%; border-collapse: collapse; table-layout: fixed; }}
+            table.layout th, table.layout td {{ border: 1px solid black; padding: 3px; text-align: center; overflow: hidden; }}
             .text-nowrap {{ white-space: nowrap; text-overflow: clip; }}
         </style>
         </head>
         <body>
-            <table style="width: 100%; border: none; border-bottom: 2px solid black; margin-bottom: 10px;">
+            <table style="width: 100%; border: none; border-bottom: 2px solid black; margin-bottom: 5px;">
                 <tr>
                     <td style="width: 15%; border: none; text-align: center; vertical-align: middle;">
-                        <!-- Masukkan Direct Link Google Drive Anda pada atribut src di bawah ini -->
-                        <img src="https://drive.google.com/uc?export=view&id=1iRhKSF6LNfIKJkBwo5SJO63hlErfCU4y" width="75">
+                        <img src="{LOGO_URL}" width="70">
                     </td>
-                    <td style="width: 85%; border: none; text-align: center; vertical-align: middle; line-height: 1.2;">
+                    <td style="width: 85%; border: none; text-align: center; vertical-align: middle; line-height: 1.1;">
                         <span style="font-weight: bold; font-size: 13px;">PEMERINTAH DAERAH PROVINSI JAWA BARAT<br>
                         DINAS PENDIDIKAN - CABANG DINAS PENDIDIKAN WILAYAH V<br>
                         SEKOLAH MENENGAH ATAS NEGERI 3 SUKABUMI</span><br>
-                        <span style="font-weight: normal; font-size:10px;">Jalan Ciaul Baru No. 21 Kota Sukabumi-43116 Telp. (0266) 221453<br>E-mail : smanegeri3kotasukabumi@gmail.com</span>
+                        <span style="font-weight: normal; font-size: 10px;">Jalan Ciaul Baru No. 21 Kota Sukabumi-43116 Telp. (0266) 221453</span>
                     </td>
                 </tr>
             </table>
-            
-            <div style="text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 15px;">
+            <div style="text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 10px;">
                 DAFTAR KEHADIRAN SISWA<br>TAHUN PELAJARAN 2026-2027
             </div>
-            <table style="border:none; text-align:left; font-weight:bold; margin-bottom:5px; font-size:11px;">
+            
+            <table style="border:none; text-align:left; font-weight:bold; margin-bottom:5px; width:100%;">
                 <tr><td style="border:none; padding:0; width:50%;">Program/Kelas : {p_kelas}</td>
                 <td style="border:none; padding:0; text-align:right;">Bulan : {p_bulan}</td></tr>
             </table>
-            <table>
+            
+            <table class="layout">
                 <thead>
                     <tr>
-                        <th rowspan="2" style="width:25px; font-size:10px;">No</th>
-                        <th rowspan="2" style="width:110px;font-size:10px;" class="text-nowrap">No. Induk / NISN</th>
-                        <th rowspan="2" style="width:250px;font-size:10px;" class="text-nowrap">Nama Peserta Didik</th>
-                        <th rowspan="2" style="width:25px;font-size:10px;">L/P</th>
-                        <th colspan="6" style="font-size:10px;">Tanggal</th>
-                        <th colspan="3" style="font-size:10px;">Absensi</th>
-                        <th rowspan="2" style="font-size:10px;">Jml<br>A+S+I</th>
+                        <th rowspan="2" style="width:25px;">No</th>
+                        <th rowspan="2" style="width:95px;" class="text-nowrap">No. Induk / NISN</th>
+                        <th rowspan="2" style="width:190px;" class="text-nowrap">Nama Peserta Didik</th>
+                        <th rowspan="2" style="width:25px;">L/P</th>
+                        <th colspan="6">Tanggal</th>
+                        <th colspan="3">Absensi</th>
+                        <th rowspan="2" style="width:30px;">Jml<br>A+S+I</th>
                     </tr>
                     <tr>
-                        <th>&nbsp;&nbsp;</th><th>&nbsp;&nbsp;</th><th>&nbsp;&nbsp;</th>
-                        <th>&nbsp;&nbsp;</th><th>&nbsp;&nbsp;</th><th>&nbsp;&nbsp;</th>
-                        <th style="width:15px;font-size:10px;">A</th><th style="width:15px;font-size:10px;">S</th><th style="width:15px;font-size:10px;">I</th>
+                        <th>&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;&nbsp;</th>
+                        <th>&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;&nbsp;</th><th>&nbsp;&nbsp;&nbsp;</th>
+                        <th style="width:15px;">A</th><th style="width:15px;">S</th><th style="width:15px;">I</th>
                     </tr>
                 </thead>
                 <tbody>
         """
         for i, s in enumerate(students):
-            # Memaksa 1 baris
-            html_absen += f"<tr><td style='font-size:10px;'>{i+1}</td><td class='text-nowrap' style='font-size:9.5px;'>{s['nipd']} / {s['nisn']}</td><td style='text-align:left; font-size:10px;' class='text-nowrap'>{s['nama']}</td><td style='font-size:10px;'>{s['jk']}</td>"
+            html_absen += f"<tr><td>{i+1}</td><td class='text-nowrap' style='font-size:9px;'>{s['nipd']} / {s['nisn']}</td><td style='text-align:left; font-size:9.5px;' class='text-nowrap'>{s['nama']}</td><td>{s['jk']}</td>"
             html_absen += "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>"
             
         html_absen += f"""
                 </tbody>
             </table>
             <br>
-            <table style="border:none; text-align:center; margin-top:5px;">
+            <table style="border:none; text-align:center; margin-top:5px; width:100%;">
                 <tr>
-                    <td style="border:none; text-align:left; vertical-align:top;font-size:10px;"><b>Keterangan:</b><br>Laki-laki: {sum([1 for s in students if s['jk']=='L'])}<br>Perempuan: {sum([1 for s in students if s['jk']=='P'])}<br>Jumlah: {len(students)}</td>
-                    <td style="border:none; vertical-align:top;font-size:10px;">Mengetahui,<br>Kepala SMAN 3 Kota Sukabumi<br><br><br><br><b>Dr. Dudung Koswara, M.Pd</b><br>NIP. 196806061991031012</td>
-                    <td style="border:none; vertical-align:top;font-size:10px;">Sukabumi, ........................<br>Wali Kelas<br><br><br><br><b>{walas}</b><br>NIP. {walas_nip}</td>
+                    <td style="border:none; text-align:left; vertical-align:top; width:33%;"><b>Keterangan:</b><br>Laki-laki: {sum([1 for s in students if s['jk']=='L'])}<br>Perempuan: {sum([1 for s in students if s['jk']=='P'])}<br>Jumlah: {len(students)}</td>
+                    <td style="border:none; vertical-align:top; width:33%;">Mengetahui,<br>Kepala SMAN 3 Kota Sukabumi<br><br><br><br><b>Dr. Dudung Koswara, M.Pd</b><br>NIP. 196806061991031012</td>
+                    <td style="border:none; vertical-align:top; width:33%;">Sukabumi, ........................<br>Wali Kelas<br><br><br><br><b>{walas}</b><br>NIP. {walas_nip}</td>
                 </tr>
             </table>
         </body></html>
         """
         b64 = base64.b64encode(html_absen.encode()).decode()
-        st.success("Berhasil! Layout 1 Baris (Satu Kolom) disesuaikan untuk Kertas F4.")
+        st.success("Berhasil! Dokumen dengan Logo dan Kertas F4 siap dicetak.")
         st.markdown(f'<a href="data:text/html;base64,{b64}" download="Absensi_F4_{p_kelas}_{p_bulan}.html"><button style="padding:10px; background:#0d6efd; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">📥 Cetak Absensi Vertikal F4</button></a>', unsafe_allow_html=True)
 
 # ==========================================
@@ -280,22 +279,19 @@ elif st.session_state.nav == "Cetak Absensi":
 # ==========================================
 elif st.session_state.nav == "Mutasi & Pindah Kelas":
     st.title("🔄 Rekap Mutasi & Pindah Kelas")
-    
     c1, c2, c3 = st.columns(3)
     c1.info(f"**Total Mutasi Masuk:** {len(data['mutasiMasuk'])} Siswa")
     c2.error(f"**Total Mutasi Keluar:** {len(data['mutasiKeluar'])} Siswa")
     c3.success(f"**Total Riwayat Pindah:** {len(data['riwayatPindah'])} Siswa")
-    
     st.write("---")
-    t1, t2, t3 = st.tabs(["➡️ Pindah Kelas & Riwayat", "📥 Mutasi Masuk", "📤 Mutasi Keluar"])
     
+    t1, t2, t3 = st.tabs(["➡️ Pindah Kelas & Riwayat", "📥 Mutasi Masuk", "📤 Mutasi Keluar"])
     with t1:
         st.subheader("📝 Formulir Pindah / Naik Kelas")
         df = pd.DataFrame(data['siswa']).sort_values('nama')
         siswa_list = df['nama'] + " (" + df['rombel'] + ") - " + df['nisn'].astype(str)
         p_siswa = st.selectbox("Pilih Siswa", siswa_list, key="p_siswa")
         p_rombel_baru = st.selectbox("Pindah ke Rombel", data['rombels'], key="p_rombel")
-        
         if st.button("Proses Pindah Kelas", type="primary"):
             row_data = df.iloc[siswa_list.tolist().index(p_siswa)]
             payload = {"action": "pindahKelas", "data": {"rowIndex": int(row_data['rowIndex']), "nama": row_data['nama'], "nisn": row_data['nisn'], "kelasAsal": row_data['rombel'], "kelasTujuan": p_rombel_baru}}
@@ -308,7 +304,7 @@ elif st.session_state.nav == "Mutasi & Pindah Kelas":
         else: st.info("Belum ada riwayat pindah kelas.")
     
     with t2:
-        st.subheader("📥 Formulir Mutasi Masuk (Otomatis Masuk Master)")
+        st.subheader("📥 Formulir Mutasi Masuk")
         with st.form("f_masuk"):
             c1, c2 = st.columns(2)
             m_nama = c1.text_input("Nama Siswa").upper()
@@ -330,7 +326,7 @@ elif st.session_state.nav == "Mutasi & Pindah Kelas":
         else: st.info("Belum ada data mutasi masuk.")
 
     with t3:
-        st.subheader("📤 Formulir Mutasi Keluar (Otomatis Hapus dari Master)")
+        st.subheader("📤 Formulir Mutasi Keluar")
         df_k = pd.DataFrame(data['siswa']).sort_values('nama')
         siswa_keluar_list = df_k['nama'] + " (" + df_k['rombel'] + ") - " + df_k['nisn'].astype(str)
         k_siswa = st.selectbox("Pilih Siswa yang Keluar", siswa_keluar_list, key="k_siswa")
@@ -348,3 +344,75 @@ elif st.session_state.nav == "Mutasi & Pindah Kelas":
         if len(data['mutasiKeluar']) > 0:
             st.dataframe(pd.DataFrame(data['mutasiKeluar'], columns=["No Urut", "No Absen", "NIS", "NISN", "Nama", "L/P", "Pindah Ke", "Tgl", "Kelas Asal", "Sebab Keluar", "Validasi"]).drop(columns=["No Absen", "Validasi"], errors='ignore'), use_container_width=True)
         else: st.info("Belum ada data mutasi keluar.")
+
+# ==========================================
+# HALAMAN 5: CEK DATA DAPODIK
+# ==========================================
+elif st.session_state.nav == "Cek Data Dapodik":
+    st.title("🔄 Sinkronisasi & Cek Data Dapodik")
+    
+    if 'dapodik' not in data or len(data['dapodik']) == 0:
+        st.error("⚠️ Sheet 'DATA DAPODIK' tidak ditemukan atau masih kosong di Google Sheets.")
+    else:
+        df_siswa = pd.DataFrame(data['siswa']).fillna('')
+        df_dapodik = pd.DataFrame(data['dapodik']).fillna('')
+        
+        selected_kelas = st.selectbox("📌 Pilih Kelas untuk dibandingkan", data['rombels'])
+        
+        df_s_kelas = df_siswa[df_siswa['rombel'] == selected_kelas].copy()
+        df_d_kelas = df_dapodik[df_dapodik['rombel'] == selected_kelas].copy()
+        
+        st.info(f"📊 **Statistik Kelas {selected_kelas}:** Total Data Sekolah: **{len(df_s_kelas)}** Siswa | Total Data Dapodik: **{len(df_d_kelas)}** Siswa")
+        st.write("---")
+        
+        metode = st.radio("Metode Pencocokan:", ["Berdasarkan Nama Siswa", "Berdasarkan NISN"], horizontal=True)
+        key = "nama" if metode == "Berdasarkan Nama Siswa" else "nisn"
+        
+        # Konversi key ke string untuk memastikan merge aman
+        df_s_kelas[key] = df_s_kelas[key].astype(str).str.strip()
+        df_d_kelas[key] = df_d_kelas[key].astype(str).str.strip()
+        
+        df_merge = pd.merge(df_s_kelas, df_d_kelas, on=key, how='outer', suffixes=('_sekolah', '_dapo'), indicator=True)
+        
+        only_sekolah = df_merge[df_merge['_merge'] == 'left_only']
+        only_dapodik = df_merge[df_merge['_merge'] == 'right_only']
+        both = df_merge[df_merge['_merge'] == 'both']
+        
+        # Cari Perbedaan Detail
+        beda_data = []
+        for _, row in both.iterrows():
+            diffs = []
+            if key == "nama":
+                if str(row.get('nisn_sekolah','')) != str(row.get('nisn_dapo','')): diffs.append("NISN")
+            else:
+                if str(row.get('nama_sekolah','')) != str(row.get('nama_dapo','')): diffs.append("Nama")
+                
+            if str(row.get('nipd_sekolah','')) != str(row.get('nipd_dapo','')): diffs.append("NIPD/NIS")
+            if str(row.get('jk_sekolah','')) != str(row.get('jk_dapo','')): diffs.append("L/P (JK)")
+            
+            if diffs:
+                beda_data.append({
+                    "Siswa (Key)": row[key],
+                    "Perbedaan Pada": ", ".join(diffs),
+                    "Data Sekolah": f"NISN: {row.get('nisn_sekolah','')}, L/P: {row.get('jk_sekolah','')}, Nama: {row.get('nama_sekolah','')}",
+                    "Data Dapodik": f"NISN: {row.get('nisn_dapo','')}, L/P: {row.get('jk_dapo','')}, Nama: {row.get('nama_dapo','')}"
+                })
+        
+        t1, t2, t3 = st.tabs(["⚠️ Beda Detail Data", "🏫 Hanya ada di Sekolah (Belum di Dapodik)", "🌐 Hanya ada di Dapodik (Hilang di Sekolah)"])
+        
+        with t1:
+            st.subheader("Data Ditemukan Tapi Berbeda")
+            if beda_data: st.dataframe(pd.DataFrame(beda_data), use_container_width=True)
+            else: st.success("🎉 Luar biasa! Semua siswa yang cocok memiliki rincian data yang sama persis.")
+                
+        with t2:
+            st.subheader("Siswa Internal (Tidak ada di Dapodik)")
+            if len(only_sekolah) > 0:
+                st.dataframe(only_sekolah[['nama' if key=='nisn' else 'nama_sekolah', 'nisn' if key=='nama' else 'nisn_sekolah', 'jk_sekolah']].dropna(axis=1, how='all'), use_container_width=True)
+            else: st.success("Tidak ada siswa sekolah yang tertinggal di Dapodik.")
+                
+        with t3:
+            st.subheader("Siswa Dapodik (Tidak ada di Data Internal)")
+            if len(only_dapodik) > 0:
+                st.dataframe(only_dapodik[['nama' if key=='nisn' else 'nama_dapo', 'nisn' if key=='nama' else 'nisn_dapo', 'jk_dapo']].dropna(axis=1, how='all'), use_container_width=True)
+            else: st.success("Tidak ada data asing dari Dapodik.")
