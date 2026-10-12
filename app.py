@@ -377,6 +377,13 @@ elif st.session_state.nav == "Cek Data Dapodik":
         only_sekolah = df_merge[df_merge['_merge'] == 'left_only']
         only_dapodik = df_merge[df_merge['_merge'] == 'right_only']
         both = df_merge[df_merge['_merge'] == 'both']
+
+        # --- PERBAIKAN LOGIKA NAMA KOLOM ---
+        col_nama_s = 'nama' if key == 'nama' else 'nama_sekolah'
+        col_nisn_s = 'nisn' if key == 'nisn' else 'nisn_sekolah'
+        
+        col_nama_d = 'nama' if key == 'nama' else 'nama_dapo'
+        col_nisn_d = 'nisn' if key == 'nisn' else 'nisn_dapo'
         
         # Cari Perbedaan Detail
         beda_data = []
@@ -408,11 +415,13 @@ elif st.session_state.nav == "Cek Data Dapodik":
         with t2:
             st.subheader("Siswa Internal (Tidak ada di Dapodik)")
             if len(only_sekolah) > 0:
-                st.dataframe(only_sekolah[['nama' if key=='nisn' else 'nama_sekolah', 'nisn' if key=='nama' else 'nisn_sekolah', 'jk_sekolah']].dropna(axis=1, how='all'), use_container_width=True)
+                # Menggunakan variabel kolom yang sudah diperbaiki
+                st.dataframe(only_sekolah[[col_nama_s, col_nisn_s, 'jk_sekolah']].dropna(axis=1, how='all'), use_container_width=True)
             else: st.success("Tidak ada siswa sekolah yang tertinggal di Dapodik.")
                 
         with t3:
             st.subheader("Siswa Dapodik (Tidak ada di Data Internal)")
             if len(only_dapodik) > 0:
-                st.dataframe(only_dapodik[['nama' if key=='nisn' else 'nama_dapo', 'nisn' if key=='nama' else 'nisn_dapo', 'jk_dapo']].dropna(axis=1, how='all'), use_container_width=True)
+                # Menggunakan variabel kolom yang sudah diperbaiki
+                st.dataframe(only_dapodik[[col_nama_d, col_nisn_d, 'jk_dapo']].dropna(axis=1, how='all'), use_container_width=True)
             else: st.success("Tidak ada data asing dari Dapodik.")
