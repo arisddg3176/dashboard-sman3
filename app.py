@@ -7,7 +7,7 @@ import base64
 # KONFIGURASI API & GAMBAR
 # ==========================================
 API_URL = "https://script.google.com/macros/s/AKfycbwYeYIT6Jjfwfwu8lEiV9iDW_TefnSvD-vdjCvR4PH2QqOWXfKGtWA8xvOqZfCdAIBxMQ/exec" # GANTI DENGAN URL WEB APP BARU
-LOGO_URL = "https://raw.githubusercontent.com/username/repo/main/logo.png" # GANTI DENGAN URL RAW GITHUB LOGO ANDA
+LOGO_URL = "logo provinsi jabar.png" # GANTI DENGAN URL RAW GITHUB LOGO ANDA
 
 st.set_page_config(page_title="Dashboard SMAN 3 Sukabumi", page_icon="🎓", layout="wide")
 
